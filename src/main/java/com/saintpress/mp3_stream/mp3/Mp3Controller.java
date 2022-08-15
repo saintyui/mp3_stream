@@ -1,15 +1,28 @@
 package com.saintpress.mp3_stream.mp3;
 
 import lombok.RequiredArgsConstructor;
+import org.jaudiotagger.audio.AudioFileIO;
+import org.jaudiotagger.audio.exceptions.CannotReadException;
+import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
+import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
+import org.jaudiotagger.audio.mp3.MP3File;
+import org.jaudiotagger.tag.FieldKey;
+import org.jaudiotagger.tag.Tag;
+import org.jaudiotagger.tag.TagException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/mp3")
@@ -18,17 +31,45 @@ public class Mp3Controller {
     //C:\mp3_test
 
     @GetMapping(value="/list")
-    public List<String> mp3List(){
+    public List<Object> mp3List() throws IOException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException {
         return fileList();
     }
 
-    public List<String> fileList(){
+    public List<Object> fileList() throws IOException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException {
         //C:\mp3_test
-        File dir = new File("C:/mp3_test");
-        List<String> fileList;
-        fileList = Arrays.asList(Objects.requireNonNull(dir.list((f, name) -> name.endsWith(".mp3"))));
+        Path dir = Paths.get("C:/mp3_test");
+        List<Path> fileList;
 
-        return fileList;
+        Stream<Path> walk = Files.walk(dir);
+        fileList = walk
+                .filter(Files::isRegularFile)
+                .filter(path -> path.getFileName().toString().endsWith(".mp3"))
+                .collect(Collectors.toList());
+
+        List<Object> mp3List = new ArrayList<>();
+        Long id = 0L;
+
+        for(Path path: fileList){
+            id++;
+            HashMap <String, Object> mp3Map = new HashMap<>();
+            File route = new File(path.toUri());
+            String route_string = route.toString().replace("\\", "/");
+            MP3File mp3 = (MP3File) AudioFileIO.read(route);
+            Tag tag = mp3.getTag();
+            String title = tag.getFirst(FieldKey.TITLE);
+            String artist = tag.getFirst(FieldKey.ARTIST);
+            String album = tag.getFirst(FieldKey.ALBUM);
+            mp3Map.put("title", title);
+            mp3Map.put("artist", artist);
+            mp3Map.put("album", album);
+            mp3Map.put("route", route_string);
+            mp3Map.put("id", id);
+
+            //System.out.println(mp3Map);
+            mp3List.add(mp3Map);
+        }
+
+        return mp3List;
     }
 
 
