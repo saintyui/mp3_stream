@@ -56,9 +56,18 @@ public class Mp3Controller {
             String route_string = route.toString().replace("\\", "/");
             MP3File mp3 = (MP3File) AudioFileIO.read(route);
             Tag tag = mp3.getTag();
-            String title = tag.getFirst(FieldKey.TITLE);
-            String artist = tag.getFirst(FieldKey.ARTIST);
-            String album = tag.getFirst(FieldKey.ALBUM);
+            String title;
+            String artist;
+            String album;
+            if (tag == null){
+                title = "무제";
+                artist = "알 수 없는 가수";
+                album = "알 수 없는 앨범";
+            } else {
+                title = tag.getFirst(FieldKey.TITLE);
+                artist = tag.getFirst(FieldKey.ARTIST);
+                album = tag.getFirst(FieldKey.ALBUM);
+            }
             mp3Map.put("title", title);
             mp3Map.put("artist", artist);
             mp3Map.put("album", album);

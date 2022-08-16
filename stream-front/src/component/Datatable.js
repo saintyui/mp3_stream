@@ -1,42 +1,71 @@
-import React from "react";
+import {useCallback, useEffect, useState} from "react";
 import MUIDataTable from "mui-datatables";
 
 const Datatable = () => {
 
+    const [mp3List, setMp3List] = useState([]);
+
     const columns = [
         {
-            name: "name",
-            label: "Name",
+            name: "id",
+            label: "Id",
             options: {
                 filter: true,
                 sort: true,
             }
         },
         {
-            name: "company",
-            label: "Company",
+            name: "title",
+            label: "Title",
             options: {
                 filter: true,
                 sort: false,
             }
         },
         {
-            name: "city",
-            label: "City",
+            name: "artist",
+            label: "Artist",
             options: {
                 filter: true,
                 sort: false,
             }
         },
         {
-            name: "state",
-            label: "State",
+            name: "album",
+            label: "Album",
             options: {
                 filter: true,
                 sort: false,
+                // display: false,
             }
         },
     ];
+
+
+    useEffect(async () => {
+        const response = await fetch("/mp3/list", {
+            headers : {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'}
+            });
+        if (!response.ok){
+            throw new Error('뭔가 잘못된 거 같아');
+        }
+
+        const data = await response.json();
+        console.log(data);
+        const list = data.map(mp3Data => {
+            return{
+                id: mp3Data.id,
+                title: mp3Data.title,
+                artist: mp3Data.artist,
+                album: mp3Data.album
+            };
+        });
+
+        console.log(list);
+        setMp3List(list);
+    }, []);
 
     const data = [
         { name: "Joe James", company: "Test Corp", city: "Yonkers", state: "NY" },
@@ -46,16 +75,19 @@ const Datatable = () => {
     ];
 
     const options = {
-        filterType: 'checkbox',
+        pagination: false,
+        filterType: 'textField',
     };
 
     return (
-    <MUIDataTable
-        title={"Employee List"}
-        data={data}
-        columns={columns}
-        options={options}
-    />
+        <div>
+        <MUIDataTable
+            title={"MP3 List"}
+            data={mp3List}
+            columns={columns}
+            options={options}
+        />
+        </div>
     )
 }
 
