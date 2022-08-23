@@ -1,11 +1,16 @@
 .App {
   text-align: center;
+  background-size: cover;
+  background-image: url(assets/wave-haikei.svg);
+  height: 97.9vh;
+  width: 100vw;
+  /*background-color: #282c34;*/
 }
 
 .App-header {
   background-color: #282c34;
   height: 100vh;
-  /*display: flex;*/
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -13,8 +18,29 @@
   color: white;
 }
 
+.Contents{
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  /*background-image: url(assets/circle-scatter-haikei.svg);
+  background-size: cover;*/
+}
+
+.Container{
+  text-align: center;
+  margin: auto;
+  width: 70vw;
+}
+
 .App-link {
   color: #61dafb;
+}
+
+.H1{
+  color: #334A52;
+  font-family: sans-serif;
 }
 
 @keyframes App-logo-spin {

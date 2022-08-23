@@ -44,19 +44,17 @@ const Datatable = (props) => {
         pagination: false,
         filterType: 'textField',
         responsive: 'simple',
-        tableBodyHeight: '60vh',
+        tableBodyHeight: '65vh',
         onRowClick: rowData => props.onClick(rowData[0], rowData[1]),
     };
 
     return (
-        <div style={{height: "65vh"}}>
         <MUIDataTable
             title={"MP3 List"}
             data={props.mp3List}
             columns={columns}
             options={options}
         />
-        </div>
     )
 }
 

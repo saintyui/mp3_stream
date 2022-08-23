@@ -62,22 +62,24 @@ function App() {
 
 
   return (
-    <div className="App">
-      <div className="App-header">
-          <h2>
-              MP3 스트리밍 테스트입니다.
-          </h2>
-          <Datatable
-              mp3List={mp3List}
-              onClick={onClickHandler}
-          />
-          <AudioPlayer
-              src={url}
-              onEnded={onEndedHandler}
-          />
-          <p>지금 노래: {id}.{songTitle}</p>
+      <div className="Contents">
+          <div className="Container">
+              <h1 className="H1">
+                  MP3 Streaming Espresso
+              </h1>
+              <Datatable
+                  mp3List={mp3List}
+                  onClick={onClickHandler}
+              />
+              <div>
+                  <AudioPlayer
+                      src={url}
+                      onEnded={onEndedHandler}
+                  />
+              </div>
+              <p>지금 노래: {id}.{songTitle}</p>
+          </div>
       </div>
-    </div>
   );
 }
 
