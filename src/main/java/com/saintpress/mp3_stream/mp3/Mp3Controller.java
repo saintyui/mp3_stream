@@ -6,6 +6,7 @@ import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.TagException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
@@ -28,6 +29,9 @@ import java.util.Objects;
 public class Mp3Controller {
     //C:\mp3_test
 
+    @Autowired
+    Mp3Service mp3Service;
+
     @GetMapping(value="/list")
     public List<HashMap<String, Object>> mp3List() throws IOException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException {
         return Mp3Service.fileList();
@@ -36,7 +40,7 @@ public class Mp3Controller {
 
     @GetMapping(value = "/stream/{idx}")
     public ResponseEntity <StreamingResponseBody> stream(@PathVariable String idx) throws CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, IOException {
-        List<HashMap<String, Object>> fileList = Mp3Service.fileList();
+        List<HashMap<String, Object>> fileList = mp3Service.fileList();
         String route = "";
 
 

@@ -9,6 +9,7 @@ import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -23,23 +24,24 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
+@ConfigurationProperties( prefix = "file" )
 public class Mp3Service {
 
     //static일 경우 그냥 @Value를 그냥 받을 수 없기에 메서드 함수를 만들어줘야 한다.
-    @Value("${route.key}")
+    @Value("${file.path}")
     public void setRouteKey(String key){
-        routeKey = key;
+        pathKey = key;
     }
 
     //메서드 함수 결과를 받아서 전달한다.
-    private static String routeKey;
+    private static String pathKey;
 
 
     public static List<HashMap<String, Object>> fileList() throws IOException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException {
         //C:\mp3_test
         //Path dir = Paths.get("C:/mp3_test");
 
-        Path dir = Paths.get(routeKey);
+        Path dir = Paths.get(pathKey);
         List<Path> fileList;
 
         Stream<Path> walk = Files.walk(dir);

@@ -44,7 +44,7 @@ const Datatable = (props) => {
         pagination: false,
         filterType: 'textField',
         responsive: 'simple',
-        tableBodyHeight: '65vh',
+        tableBodyHeight: '50vh',
         onRowClick: rowData => props.onClick(rowData[0], rowData[1]),
     };
 
