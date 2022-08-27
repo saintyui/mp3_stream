@@ -1,5 +1,7 @@
 package com.saintpress.mp3_stream.mp3;
 
+import com.saintpress.mp3_stream.mp3.dto.Mp3Dto;
+import com.saintpress.mp3_stream.mp3.repository.JpaMp3Repository;
 import com.saintpress.mp3_stream.mp3.service.Mp3Service;
 import lombok.RequiredArgsConstructor;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
@@ -19,9 +21,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/mp3")
@@ -32,24 +32,31 @@ public class Mp3Controller {
     @Autowired
     Mp3Service mp3Service;
 
+    @Autowired
+    JpaMp3Repository jpaMp3Repository;
+
     @GetMapping(value="/list")
-    public List<HashMap<String, Object>> mp3List() throws IOException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException {
-        return Mp3Service.fileList();
+    public List<Mp3Dto> mp3List() {
+        return jpaMp3Repository.findAllByOrderByIdAsc();
     }
 
+    @GetMapping(value="/scan")
+    public String mp3ListSave() throws CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, IOException {
+        List<Mp3Dto> mp3List = mp3Service.fileList();
+
+        try{
+            jpaMp3Repository.deleteAllInBatch();
+            jpaMp3Repository.saveAll(mp3List);
+        } catch (Exception e){
+            return "code2";
+        }
+        return "code1";
+    }
 
     @GetMapping(value = "/stream/{idx}")
-    public ResponseEntity <StreamingResponseBody> stream(@PathVariable String idx) throws CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException, IOException {
-        List<HashMap<String, Object>> fileList = mp3Service.fileList();
-        String route = "";
-
-
-        for (HashMap<String, Object> map: fileList){
-            if(Objects.equals(String.valueOf(map.get("id")), idx)){
-                //System.out.println("id: " + idx);
-                route = (String) map.get("route");
-            }
-        }
+    public ResponseEntity <StreamingResponseBody> stream(@PathVariable String idx) {
+       Mp3Dto mp3Info = jpaMp3Repository.findById(Long.valueOf(idx));
+       String route = mp3Info.getRoute_string();
 
         //System.out.println("경로TEST: " + route);
         File file = new File(route);

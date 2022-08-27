@@ -4,6 +4,7 @@ import './App.css';
 import {useEffect, useState} from "react";
 import Datatable from "./component/Datatable";
 import AudioPlayer from "react-h5-audio-player";
+import Header from "./component/Header";
 import 'react-h5-audio-player/lib/styles.css';
 
 
@@ -64,20 +65,18 @@ function App() {
   return (
       <div className="Contents">
           <div className="Container">
-              <h1 className="H1">
-                  MP3 Streaming Espresso
-              </h1>
+             <Header />
               <Datatable
                   mp3List={mp3List}
                   onClick={onClickHandler}
               />
-              <div>
-                  <AudioPlayer
-                      src={url}
-                      onEnded={onEndedHandler}
-                  />
-              </div>
               <p>지금 노래: {id}.{songTitle}</p>
+          </div>
+          <div className="Footer">
+              <AudioPlayer
+                  src={url}
+                  onEnded={onEndedHandler}
+              />
           </div>
       </div>
   );

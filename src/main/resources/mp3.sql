@@ -1,0 +1,9 @@
+DROP TABLE mp3 IF EXISTS;
+
+CREATE TABLE mp3(
+    id BIGINT IDENTITY NOT NULL PRIMARY KEY,
+    title VARCHAR(50),
+    artist VARCHAR(100),
+    album VARCHAR(100),
+    route_string VARCHAR(100)
+);

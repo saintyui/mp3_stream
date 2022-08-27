@@ -1,0 +1,30 @@
+.Header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    padding-left: 2vw;
+    padding-right: 2vw;
+    background: #474554;
+}
+
+.H2 {
+    color: #ffffff;
+}
+
+.Button {
+    position: relative;
+    display: block;
+    padding: 7px;
+    overflow: hidden;
+    border-width: 0;
+    outline: none;
+    border-radius: 2px;
+    box-shadow: 0 1px 4px rgb(0 0 0 / 60%);
+    background-color: #ACA7CB;
+    color: #ecf0f1;
+    transition: background-color .3s;
+}
+
+.Button:hover, .Button:focus {
+    background-color: #8782A5;
+}
