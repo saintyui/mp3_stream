@@ -1,3 +1,7 @@
+:root{
+  --vh: 100%;
+}
+
 .App {
   text-align: center;
   background-size: cover;
@@ -26,6 +30,11 @@
   flex-direction: column;
   /*background-image: url(assets/wave-haikei.svg);*/
   background-size: cover;
+}
+@media only screen and (max-device-width: 1080px){
+   .Contents {
+    height: calc(var(--vh, 1vh)*100);
+  }
 }
 
 .Container{

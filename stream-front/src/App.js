@@ -6,14 +6,24 @@ import Datatable from "./component/Datatable";
 import AudioPlayer from "react-h5-audio-player";
 import Header from "./component/Header";
 import 'react-h5-audio-player/lib/styles.css';
+import playButton from "react-mp3-player/dist/icons/PlayButton";
 
 
 function App() {
     const [mp3List, setMp3List] = useState([]);
     const [mp3ListLength, setMp3ListLength] = useState(0);
-    const [id, setId] = useState(1);
-    const [url, setUrl] = useState("/mp3/stream/1");
+    const [idx, setIdx] = useState('1');
+    const [url, setUrl] = useState('');
     const [songTitle, setSongTitle] = useState('');
+
+    const setScreenSize = () => {
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty("--vh", `${vh}px`);
+    }
+
+    useEffect(() => {
+        setScreenSize();
+    }, []);
 
     useEffect(async () => {
         const response = await fetch("/mp3/list", {
@@ -44,23 +54,31 @@ function App() {
 
     const onEndedHandler = () => {
         //console.log(mp3ListLength);
-        if(id < mp3ListLength){
-            setId(id + 1);
-            setUrl("/mp3/stream/"+(id + 1));
-            setSongTitle(mp3List[id].title);
+        if(idx < mp3ListLength){
+            setIdx(idx + 1);
+            setUrl("/mp3/stream/"+(idx + 1));
+            setSongTitle(mp3List[idx].title);
         } else {
-            setId(1);
+            setIdx(1);
             setUrl("/mp3/stream/1");
             setSongTitle(mp3List[0].title);
         }
     }
 
     const onClickHandler = (id, title) => {
-        setId(id);
+        setIdx(id);
         setSongTitle(title);
         setUrl("/mp3/stream/"+ id);
     }
 
+    const onClickPlayHandler = () => {
+        //console.log(idx);
+        if(url === ''){
+            setIdx(1);
+            setUrl("/mp3/stream/"+1);
+            setSongTitle(mp3List[0].title);
+        }
+    }
 
   return (
       <div className="Contents">
@@ -70,12 +88,13 @@ function App() {
                   mp3List={mp3List}
                   onClick={onClickHandler}
               />
-              <p>지금 노래: {id}.{songTitle}</p>
+              <p>지금 노래: {idx}.{songTitle}</p>
           </div>
           <div className="Footer">
               <AudioPlayer
                   src={url}
                   onEnded={onEndedHandler}
+                  onPlayError={onClickPlayHandler}
               />
           </div>
       </div>
